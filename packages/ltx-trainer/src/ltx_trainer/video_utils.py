@@ -94,7 +94,8 @@ def save_video(
 
     with av.open(str(output_path), mode="w") as container:
         # Setup video stream
-        video_stream = container.add_stream("libx264", rate=int(fps))
+        # Keep fractional NTSC rates exact; int(fps) would truncate 23.976/29.97 to 23/29.
+        video_stream = container.add_stream("libx264", rate=Fraction(fps).limit_denominator(100000))
         video_stream.width = width
         video_stream.height = height
         video_stream.pix_fmt = "yuv420p"
