@@ -619,7 +619,7 @@ def main() -> None:
 
     encode_video(
         video=video,
-        fps=int(args.frame_rate * (2**args.temporal_upsample_rounds)),
+        fps=args.frame_rate * (2**args.temporal_upsample_rounds),
         audio=audio,
         output_path=args.output_path,
         video_chunks_number=get_video_chunks_number(num_frames, tiling_config),

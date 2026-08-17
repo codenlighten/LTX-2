@@ -231,7 +231,9 @@ def encode_exr_sequence_to_mp4(exr_dir: Path, output_mp4: Path, frame_rate: floa
         raise FileNotFoundError(f"No EXR frames found in {exr_dir}")
 
     container = av.open(str(output_mp4), mode="w")
-    stream = container.add_stream("libx264", rate=Fraction(frame_rate).limit_denominator(1000))
+    # Denominator bound must exceed 1001 or NTSC source rates cannot be represented
+    # exactly (23.976 = 24000/1001), which would drift against the input timing.
+    stream = container.add_stream("libx264", rate=Fraction(frame_rate).limit_denominator(100000))
     stream.pix_fmt = "yuv420p"
     stream.options = {"crf": "18", "movflags": "+faststart"}
 
